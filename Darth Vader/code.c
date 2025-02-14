@@ -5,43 +5,34 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+struct Dimensions
+{
+    unsigned int width;
+    unsigned int height;
+};
+
+struct Color
+{
+    unsigned char blue;
+    unsigned char green;
+    unsigned char red;
+};
+
 int main()
 {
     FILE *pic = fopen("darthvador.bmp", "r+");
-    if (pic == NULL)
-    {
-        perror("Error opening file");
-        return 1;
-    }
-
-    fseek(pic, 0, SEEK_END);
-    int size = ftell(pic);
 
     // Read BMP info header
     fseek(pic, 18, SEEK_SET);
-    unsigned int width, height;
-    fread(&width, 4, 1, pic);
-    fread(&height, 4, 1, pic);
-
-    fseek(pic, 34, SEEK_SET);
-    unsigned int size1;
-    fread(&size1, 4, 1, pic);
-
-    printf("%d\n", size1);
-    printf("%d\n", width);
-    printf("%d\n", height);
+    struct Dimensions picDimensions;
+    fread(&picDimensions.width, 4, 1, pic);
+    fread(&picDimensions.height, 4, 1, pic);
 
     // Move to first pixel
     fseek(pic, 54, SEEK_SET);
 
     // Create new flipped image file stream
     FILE *newPic = fopen("darthVadorFlipped.bmp", "w+");
-    if (newPic == NULL)
-    {
-        perror("Error creating new file");
-        fclose(pic);
-        return 1;
-    }
 
     // Copy file header
     void *fileHeaderBuf = malloc(54);
@@ -51,22 +42,19 @@ int main()
     free(fileHeaderBuf);
 
     // Create a buffer for a row of the image
-    char *rowBuf = malloc(width * 3);
+    struct Color *rowBuf = malloc(picDimensions.width * sizeof(struct Color));
 
-    for (int j = 0; j < height; j++)
+    for (int j = 0; j < picDimensions.height; j++)
     {
-        fread(rowBuf, 3, width, pic);
-        for (int i = 0; i < width / 2; i++)
+        fread(rowBuf, sizeof(struct Color), picDimensions.width, pic);
+        for (int i = 0; i < picDimensions.width / 2; i++)
         {
-            for (int k = 0; k < 3; k++)
-            {
-                // switch pixels
-                char temp = rowBuf[i * 3 + k];
-                rowBuf[i * 3 + k] = rowBuf[(width - i - 1) * 3 + k];
-                rowBuf[(width - i - 1) * 3 + k] = temp;
-            }
+            // switch pixels
+            struct Color temp = rowBuf[i];
+            rowBuf[i] = rowBuf[picDimensions.width - i - 1];
+            rowBuf[picDimensions.width - i - 1] = temp;
         }
-        fwrite(rowBuf, 3, width, newPic);
+        fwrite(rowBuf, sizeof(struct Color), picDimensions.width, newPic);
     }
 
     free(rowBuf);
