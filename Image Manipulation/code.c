@@ -294,12 +294,6 @@ void shrink25(FILE *original, FILE *copy)
     struct Color *row1Buf = malloc(rowSize);
     struct Color *row2Buf = malloc(rowSize);
 
-    if (row1Buf == NULL || row2Buf == NULL)
-    {
-        printf("Memory allocation failed\n");
-        return;
-    }
-
     // Move to first pixel
     fseek(original, 54, SEEK_SET);
     fseek(copy, 54, SEEK_SET);
