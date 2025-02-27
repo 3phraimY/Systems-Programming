@@ -1,40 +1,34 @@
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 int main()
 {
     FILE *fp;
+    int wordLength = 0;
+    int wordCount = 0;
+    char ch;
 
-    fp = fopen("file.txt", "r+");
+    fp = fopen("file.txt", "r");
 
-    /*int ret;
-
-    char *buf;
-    buf = malloc(1000);
-
-    char *s_ret;
-
-    while ((s_ret = fgets(buf, 1000, fp)) != NULL)
+    while ((ch = fgetc(fp)) != EOF)
     {
-        printf("%s", buf);
+        if (ch == ' ')
+        {
+            wordCount++;
+            wordLength = 0;
+        }
+        wordLength++;
     }
 
-    free(buf); */
-
-    void *buf;
-    buf = malloc(16);
-    size_t rs;
-
-    while ((rs = fread(buf, 2, 8, fp)) > 0)
+    if (wordLength > 0)
     {
-        printf("%d ", (int)rs);
+        wordCount++;
     }
 
-    free(buf);
     fclose(fp);
+
+    printf("The number of words in the file is: %d\n", wordCount);
+
     return 0;
 }
