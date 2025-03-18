@@ -7,8 +7,6 @@
 #include <sys/wait.h>
 #include <string.h>
 
-char intToChar(int number);
-
 int main()
 {
     FILE *genesis;
@@ -25,12 +23,9 @@ int main()
 
     for (int i = 0; i < numberOfFiles; i++)
     {
-        char fileName[20] = "genesis_Part";
-        char currentFileNumber = intToChar(i + 1);
-        fileName[12] = currentFileNumber;
-
-        char *newFileName = strcat(fileName, ".txt");
-        strcpy(allFileNames[i], newFileName);
+        char fileName[20];
+        sprintf(fileName, "genesis_Part%d.txt", i + 1);
+        strcpy(allFileNames[i], fileName);
 
         int pid = fork();
         if (pid == 0)
@@ -77,22 +72,3 @@ int main()
     fclose(newGenesisCopy);
     return 0;
 }
-
-char intToChar(int number)
-{
-    switch (number)
-    {
-    case 1:
-        return '1';
-    case 2:
-        return '2';
-    case 3:
-        return '3';
-    case 4:
-        return '4';
-    case 5:
-        return '5';
-    default:
-        return '0';
-    }
-};
