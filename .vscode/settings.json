@@ -5,7 +5,6 @@
         "siginfo.h": "c"
     },
     "code-runner.executorMap": {
-    "c": "cd \"$dir\" && gcc -pthread $fileName -o $fileNameWithoutExt && \"$dir$fileNameWithoutExt\""
-}
-
+    "c": "cd $dir && gcc -pthread $fileName -o $fileNameWithoutExt && ./$fileNameWithoutExt"
+    }
 }
