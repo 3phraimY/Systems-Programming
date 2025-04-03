@@ -27,20 +27,10 @@ int main()
 {
     threads = malloc(k * sizeof(pthread_t));
     count = malloc(n * sizeof(int));
-    if (threads == NULL || count == NULL)
-    {
-        perror("Failed to allocate memory");
-        return EXIT_FAILURE;
-    }
 
     for (int i = 0; i < k; i++)
     {
         int *offset = malloc(sizeof(int));
-        if (offset == NULL)
-        {
-            perror("Failed to allocate memory");
-            return EXIT_FAILURE;
-        }
         *offset = i * numbersPerThread;
         pthread_create(&threads[i], NULL, threadCount, offset);
     }
@@ -51,10 +41,10 @@ int main()
     }
 
     // Print the result
-    // for (int i = 0; i < n; i++)
-    // {
-    //     printf("%d\n", count[i]);
-    // }
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d\n", count[i]);
+    }
 
     free(threads);
     free(count);
