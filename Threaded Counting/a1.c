@@ -18,6 +18,7 @@ void *threadCount(void *arg)
     int offset = *(int *)arg;
     for (int i = offset; i < offset + numbersPerThread; i++)
     {
+        printf("thread with offset of %d, counted: %d\n", offset, (i + 1));
         count[i] = i + 1;
     }
     return NULL;
@@ -29,11 +30,12 @@ int main()
     count = malloc(n * sizeof(int));
 
     int remainingNumbers = n % k;
+    int offsets[k];
 
     for (int i = 0; i < k; i++)
     {
-        int offset = i * numbersPerThread;
-        pthread_create(&threads[i], NULL, threadCount, &offset);
+        offsets[i] = i * numbersPerThread;
+        pthread_create(&threads[i], NULL, threadCount, &offsets[i]);
     }
 
     // write extra digits
@@ -45,12 +47,6 @@ int main()
     for (int i = 0; i < k; i++)
     {
         pthread_join(threads[i], NULL);
-    }
-
-    // Print the result
-    for (int i = 0; i < n; i++)
-    {
-        printf("%d\n", count[i]);
     }
 
     free(threads);
