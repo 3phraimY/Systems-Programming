@@ -36,15 +36,15 @@ int main()
         pthread_create(&threads[i], NULL, threadCount, &offset);
     }
 
-    for (int i = 0; i < k; i++)
-    {
-        pthread_join(threads[i], NULL);
-    }
-
     // write extra digits
     for (int i = remainingNumbers; i > 0; i--)
     {
         count[n - i] = n - i + 1;
+    }
+
+    for (int i = 0; i < k; i++)
+    {
+        pthread_join(threads[i], NULL);
     }
 
     // Print the result
